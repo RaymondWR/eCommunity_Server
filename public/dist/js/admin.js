@@ -1,7 +1,7 @@
 var loginusername = localStorage.getItem("username");
-if(loginusername == null){
-    window.location.href = "login.html"
-}
+// if(loginusername == null){
+//     window.location.href = "login.html"
+// }
 
 $(function() {
 
