@@ -44,6 +44,19 @@ exports.deleteNote= function( req, res ) {
      });
   },
 
+
+  exports.totalnotes= function (req, res) {
+  Note.count({}, function(err, result){
+    res.send(result.toString());
+  });
+  
+}
+exports.latestnotes= function (req, res) {
+  Note.find({}, null, {limit:3}, function(err, result){
+    res.send(result);
+  });
+  
+}
   exports.getSubCategory= function( req, res ) {
     var id = req.params.subCategoryId;
     Note.find({'category':  id}, null, null, function(error, result){
@@ -54,6 +67,4 @@ exports.deleteNote= function( req, res ) {
         res.send(result)
     }
   });
-
-
   }

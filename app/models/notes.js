@@ -7,6 +7,7 @@ var mongoose = require('mongoose')
        , createdAt : {type : Date, default : Date.now}
        , isPrivate : {type : Boolean, default : true}
        , userId  : { type: String }
+       , rating  : { type: Number, default: 0 }
   });
 
 module.exports = mongoose.model('Note', notesSchema);

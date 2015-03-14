@@ -13,10 +13,65 @@ exports.authCallback = function (req, res, next) {
  //res.redirect('/')
 }
 
+exports.createsocial = function (req, res) {
+
+ var input = req.body; 
+ if(input.provider=="twitter"){
+       User.findOne({ 'twitterId': input.providerid }, function (err, user) {
+        if (err) { return done(err) }
+        if (!user) {
+          user = new User({
+              name: input.username
+            , username: input.username
+            , provider: 'twitter'
+            , twitterId: input.providerid
+            , twitter: input.providerdetail
+          })
+          user.save(function (err) {
+            if (err) console.log(err)
+            res.send(user)
+          })
+        }
+        else {
+          res.send(user)
+        }
+      });
+
+ }
+ if(input.provider=="facebook"){
+ User.findOne({ 'facebookId': input.providerid  }, function (err, user) {
+        if (err) { return done(err) }
+        if (!user) {
+          user = new User({
+              name: input.username
+            , username: input.fullname
+            , provider: 'facebook'
+            , facebook: input.providerdetail
+          })
+          
+          user.save(function (err) {
+            if (err) console.log(err)
+            res.send(user)
+          })
+        }
+        else {
+         res.send(user)
+        }
+      });
+  }
+}
+
+exports.totalusers = function (req, res) {
+  User.count({}, function(err, result){
+    res.send(result.toString());
+  });
+  
+}
+
 
 exports.login = function (req, res) {
-  console.log(req.user)
-  res.send("invalid password or email");
+  
+  res.send("invalid");
 }
 
 exports.userprofile = function (req, res) {
@@ -41,6 +96,7 @@ exports.session = function (req, res) {
 
 
 exports.create = function (req, res) {
+  console.log(req.body.email);
   var input = JSON.parse(req.body.user);
 
   User.findOne({ email: input.email }, function (err, user) {
@@ -54,7 +110,6 @@ exports.create = function (req, res) {
             console.log(err.errors);
             res.send(err.errors);
           }
-          req.session.user = newuser;
 
           res.send(newuser);
           })
@@ -64,9 +119,37 @@ exports.create = function (req, res) {
         res.send("user exist");
       }
   })
-
-
 }
+
+exports.admincreate = function (req, res) {
+  console.log("AdminCreate")
+  var input = req.body;
+
+  User.findOne({ email: input.email }, function (err, user) {
+        if (err) { return done(err) }
+          if (!user) {
+          console.log(user)
+          var newuser = new User(input);
+          newuser.provider = 'local';
+          newuser.name = input.fullname;
+          newuser.save(function (err) {
+          if (err) {
+            console.log(err.errors);
+            res.send(err.errors);
+          }
+          
+          res.send(newuser);
+          
+          })
+        }
+     if(user != null){
+      
+        console.log(user != null)
+        res.send("user exist");
+      }
+  })
+}
+
 exports.createsocial = function (req, res) {
 
  var input = req.body;
